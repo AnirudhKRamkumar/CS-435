@@ -660,10 +660,11 @@ select {
 
 .deck-embed iframe {
   width: 100%;
-  min-height: 320px;
+  height: min(78vh, 820px);
   border: 0;
   margin-top: 12px;
   border-radius: 12px;
+  background: white;
 }
 
 .deck-download {
@@ -1001,4 +1002,72 @@ select {
   border-color: rgba(245, 158, 11, 0.85);
   transform: scale(1.04);
   font-weight: 800;
+}
+
+.deck-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 18px;
+}
+
+.select-input {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.select-input:focus {
+  border-color: rgba(59, 130, 246, 0.65);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.deck-pdf-viewer {
+  display: grid;
+  gap: 14px;
+}
+
+.deck-pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.deck-pdf-header h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.deck-pdf-viewer iframe {
+  width: 100%;
+  height: min(78vh, 820px);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 20px;
+  background: white;
+}
+
+.pdf-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border: 1px dashed rgba(148, 163, 184, 0.55);
+  border-radius: 20px;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.72);
+}
+
+.pdf-open-button {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.muted-copy {
+  color: #64748b;
+  margin: 6px 0 0;
 }

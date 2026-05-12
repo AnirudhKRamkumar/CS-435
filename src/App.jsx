@@ -1090,6 +1090,24 @@ const deckTopicMap = {
   "karatsuba.pdf": "dc",
 };
 
+const deckPdfMap = {
+  "6-DictionaryADT.pptx": "6-DictionaryADT.pdf",
+  "7-Balanced Binary trees.pptx": "7-Balanced Binary trees.pdf",
+  "8-Graphs.pptx": "8-Graphs.pdf",
+  "9-Divide and Conquer.pptx": "9-Divide and Conquer.pdf",
+  "9-Divide and Conquer-class work.pptx": "9-Divide and Conquer-class work.pdf",
+  "10-Greedy 1.pptx": "10-Greedy 1.pdf",
+  "10-Greedy 2.pptx": "10-Greedy 2.pdf",
+  "11-DynamicProgramming.pptx": "11-DynamicProgramming.pdf",
+  "11-Dynamic Programming 2.pptx": "11-Dynamic Programming 2.pdf",
+  "Graph-practice problems-solution.pdf":
+    "Graph-practice problems-solution.pdf",
+  "karatsuba.pdf": "karatsuba.pdf",
+  "practice DC-solution.pptx": "practice DC-solution.pdf",
+  "practice-DP.pptx": "practice-DP.pdf",
+  "practice-greedy.pptx": "practice-greedy.pdf",
+};
+
 const testableContentMap = [
   {
     topic: "dictionary",
@@ -1855,6 +1873,43 @@ function extractKeywords(text, limit = 8) {
     .map(([word]) => word);
 }
 
+function getSlidePdfUrl(deckName, slideNumber) {
+  const pdfName = deckPdfMap[deckName];
+
+  if (!pdfName) {
+    return null;
+  }
+
+  const encodedPdfName = encodeURIComponent(pdfName);
+  return `${import.meta.env.BASE_URL}slides/${encodedPdfName}#page=${slideNumber}&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+}
+
+function SlideSnapshot({ deck, index }) {
+  const slideUrl = getSlidePdfUrl(deck, index);
+
+  if (!slideUrl) {
+    return (
+      <div className="slide-snapshot missing">
+        <p>No PDF snapshot available.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="slide-snapshot">
+      <iframe src={slideUrl} title={`${deck} slide ${index}`} loading="lazy" />
+      <a
+        className="slide-open-link"
+        href={slideUrl}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Open slide {index}
+      </a>
+    </div>
+  );
+}
+
 function App() {
   const [selectedTopic, setSelectedTopic] = useState(topics[0].id);
   const [search, setSearch] = useState("");
@@ -2228,6 +2283,9 @@ function App() {
                     <p className="label">
                       {slide.deck} — Slide {slide.index}
                     </p>
+
+                    <SlideSnapshot deck={slide.deck} index={slide.index} />
+
                     <p>{slide.text}...</p>
                   </div>
                 ))}
@@ -3388,14 +3446,16 @@ function App() {
             filteredDecks.map((deck) => (
               <article key={deck.file} className="deck-card">
                 {(() => {
-                  const fileUrl = `/exam435/${encodeURIComponent(deck.file)}`;
-                  const isPdf = deck.type === "pdf";
+                  const pdfName = deckPdfMap[deck.file];
+                  const fileUrl = pdfName
+                    ? `${import.meta.env.BASE_URL}examnotes/${encodeURIComponent(pdfName)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`
+                    : null;
+
                   return (
                     <details className="deck-embed">
-                      <summary>
-                        {isPdf ? "Open embedded slides" : "Open deck file"}
-                      </summary>
-                      {isPdf ? (
+                      <summary>Open embedded slides</summary>
+
+                      {fileUrl ? (
                         <iframe
                           title={`${deck.file} preview`}
                           src={fileUrl}
@@ -3403,14 +3463,7 @@ function App() {
                         />
                       ) : (
                         <div className="deck-download">
-                          <p>
-                            This deck is a PPTX file. Most browsers cannot
-                            render PPTX inline, so use the link below to open
-                            it.
-                          </p>
-                          <a href={fileUrl} target="_blank" rel="noreferrer">
-                            Open {deck.file}
-                          </a>
+                          <p>No PDF version found for this deck.</p>
                         </div>
                       )}
                     </details>
