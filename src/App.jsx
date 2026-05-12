@@ -862,11 +862,11 @@ const kruskalSteps = [
     note: "Edge AB connects two sets, merging them without creating a cycle.",
   },
   {
-    edge: "BD (10)",
+    edge: "CD (8)",
     action: "Accept",
     sets: "{A,B,C,D,E}",
-    chosen: ["AC", "BE", "AB", "BD"],
-    note: "Edge BD brings in the last vertex, completing the MST.",
+    chosen: ["AC", "BE", "AB", "CD"],
+    note: "Edge CD is the cheapest edge connecting D to the existing component, so it completes the MST.",
   },
 ];
 
@@ -2267,31 +2267,6 @@ function App() {
               </>
             ) : (
               <p>No indexed slides found for this topic yet.</p>
-            )}
-          </article>
-
-          <article className="detail-card">
-            <h3>Indexed slide excerpts</h3>
-
-            {activeIndexedSlides.length > 0 ? (
-              <div className="code-list">
-                {activeIndexedSlides.slice(0, 8).map((slide) => (
-                  <div
-                    key={`${slide.deck}-${slide.index}`}
-                    className="code-block"
-                  >
-                    <p className="label">
-                      {slide.deck} — Slide {slide.index}
-                    </p>
-
-                    <SlideSnapshot deck={slide.deck} index={slide.index} />
-
-                    <p>{slide.text}...</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No slide excerpts found for this topic.</p>
             )}
           </article>
         </div>
