@@ -3469,47 +3469,6 @@ function App() {
                     </details>
                   );
                 })()}
-                <header>
-                  <div>
-                    <h3>{deck.file}</h3>
-                    <p>{deck.topic?.title ?? "Additional practice"}</p>
-                  </div>
-                  <span className="deck-count">{deck.slideCount} slides</span>
-                </header>
-                <div className="deck-meta">
-                  <div>
-                    <p className="label">Focus keywords</p>
-                    <div className="chip-row">
-                      {deck.keywords.map((word) => (
-                        <span key={word} className="chip">
-                          {word}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  {deck.topic && (
-                    <div>
-                      <p className="label">Key takeaways</p>
-                      <ul>
-                        {deck.topic.cheats.slice(0, 3).map((cheat) => (
-                          <li key={cheat}>{cheat}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                <div className="deck-samples">
-                  <p className="label">Slide snapshots</p>
-                  {deck.samples.map((sample) => (
-                    <div
-                      key={`${deck.file}-${sample.index}`}
-                      className="deck-sample"
-                    >
-                      <strong>Slide {sample.index}</strong>
-                      <p>{sample.text}</p>
-                    </div>
-                  ))}
-                </div>
               </article>
             ))
           )}
