@@ -870,19 +870,25 @@ const kruskalSteps = [
   },
 ];
 
+const knapsackItems = [
+  { id: 1, name: "Item 1", weight: 2, benefit: 30 },
+  { id: 2, name: "Item 2", weight: 3, benefit: 50 },
+  { id: 3, name: "Item 3", weight: 4, benefit: 60 },
+];
+
 const knapsackSteps = [
   {
-    item: "Item 1 (w=2,b=30)",
+    currentItem: 1,
     row: [0, 0, 30, 30, 30],
     note: "Fill the first row: only item 1 can be taken, so value is 30 once capacity >= 2.",
   },
   {
-    item: "Item 2 (w=3,b=50)",
+    currentItem: 2,
     row: [0, 0, 30, 50, 50],
-    note: "Consider item 2 and take the better of skipping or using it for each capacity.",
+    note: "Consider item 2 and take the better of skipping it or using it for each capacity.",
   },
   {
-    item: "Item 3 (w=4,b=60)",
+    currentItem: 3,
     row: [0, 0, 30, 50, 60],
     note: "Check whether including item 3 improves the best value at each capacity.",
   },
@@ -892,22 +898,98 @@ const huffmanSteps = [
   {
     pick: "a:5, b:9",
     combine: "n1:14",
-    note: "Pick the two lowest frequencies and merge them into a new node.",
+    note: "Pick the two lowest frequencies and merge them into a new internal node.",
+    nodes: [
+      { id: "n1", label: "14", x: 80, y: 40, active: true },
+      { id: "a", label: "a:5", x: 40, y: 120 },
+      { id: "b", label: "b:9", x: 120, y: 120 },
+      { id: "c", label: "c:12", x: 220, y: 120 },
+      { id: "d", label: "d:13", x: 300, y: 120 },
+      { id: "e", label: "e:16", x: 380, y: 120 },
+    ],
+    edges: [
+      { from: "n1", to: "a", bit: "0" },
+      { from: "n1", to: "b", bit: "1" },
+    ],
+    codes: [],
   },
   {
     pick: "c:12, d:13",
     combine: "n2:25",
-    note: "Repeat the merge with the next two smallest nodes.",
+    note: "Merge the next two smallest nodes.",
+    nodes: [
+      { id: "n1", label: "14", x: 80, y: 120 },
+      { id: "n2", label: "25", x: 260, y: 40, active: true },
+      { id: "a", label: "a:5", x: 40, y: 180 },
+      { id: "b", label: "b:9", x: 120, y: 180 },
+      { id: "c", label: "c:12", x: 220, y: 120 },
+      { id: "d", label: "d:13", x: 300, y: 120 },
+      { id: "e", label: "e:16", x: 380, y: 120 },
+    ],
+    edges: [
+      { from: "n1", to: "a", bit: "0" },
+      { from: "n1", to: "b", bit: "1" },
+      { from: "n2", to: "c", bit: "0" },
+      { from: "n2", to: "d", bit: "1" },
+    ],
+    codes: [],
   },
   {
     pick: "n1:14, e:16",
     combine: "n3:30",
-    note: "Merge the next smallest pair to keep the tree optimal.",
+    note: "Merge the next smallest pair: the previous subtree n1 and e.",
+    nodes: [
+      { id: "n3", label: "30", x: 140, y: 40, active: true },
+      { id: "n1", label: "14", x: 80, y: 110 },
+      { id: "e", label: "e:16", x: 200, y: 110 },
+      { id: "n2", label: "25", x: 320, y: 110 },
+      { id: "a", label: "a:5", x: 40, y: 180 },
+      { id: "b", label: "b:9", x: 120, y: 180 },
+      { id: "c", label: "c:12", x: 280, y: 180 },
+      { id: "d", label: "d:13", x: 360, y: 180 },
+    ],
+    edges: [
+      { from: "n3", to: "n1", bit: "0" },
+      { from: "n3", to: "e", bit: "1" },
+      { from: "n1", to: "a", bit: "0" },
+      { from: "n1", to: "b", bit: "1" },
+      { from: "n2", to: "c", bit: "0" },
+      { from: "n2", to: "d", bit: "1" },
+    ],
+    codes: [],
   },
   {
     pick: "n2:25, n3:30",
     combine: "root:55",
-    note: "Finish by merging the last two nodes to form the root.",
+    note: "The final merge creates the Huffman tree root. Read off each code by tracing 0/1 edges from root to leaf.",
+    nodes: [
+      { id: "root", label: "55", x: 220, y: 25, active: true },
+      { id: "n2", label: "25", x: 320, y: 90 },
+      { id: "n3", label: "30", x: 140, y: 90 },
+      { id: "n1", label: "14", x: 80, y: 150 },
+      { id: "e", label: "e:16", x: 200, y: 150 },
+      { id: "c", label: "c:12", x: 280, y: 150 },
+      { id: "d", label: "d:13", x: 360, y: 150 },
+      { id: "a", label: "a:5", x: 40, y: 210 },
+      { id: "b", label: "b:9", x: 120, y: 210 },
+    ],
+    edges: [
+      { from: "root", to: "n3", bit: "0" },
+      { from: "root", to: "n2", bit: "1" },
+      { from: "n3", to: "n1", bit: "0" },
+      { from: "n3", to: "e", bit: "1" },
+      { from: "n1", to: "a", bit: "0" },
+      { from: "n1", to: "b", bit: "1" },
+      { from: "n2", to: "c", bit: "0" },
+      { from: "n2", to: "d", bit: "1" },
+    ],
+    codes: [
+      { symbol: "a", code: "000" },
+      { symbol: "b", code: "001" },
+      { symbol: "e", code: "01" },
+      { symbol: "c", code: "10" },
+      { symbol: "d", code: "11" },
+    ],
   },
 ];
 
@@ -1893,6 +1975,9 @@ function App() {
     kruskalSteps[Math.min(kruskalStep, kruskalSteps.length - 1)];
   const knapsackState =
     knapsackSteps[Math.min(knapsackStep, knapsackSteps.length - 1)];
+  const activeKnapsackItem =
+    knapsackItems.find((item) => item.id === knapsackState.currentItem) ??
+    knapsackItems[0];
   const huffmanState =
     huffmanSteps[Math.min(huffmanStep, huffmanSteps.length - 1)];
   const floydState = floydSteps[Math.min(floydStep, floydSteps.length - 1)];
@@ -2652,8 +2737,26 @@ function App() {
               </button>
             </div>
           </header>
+
           <div className="visual-split">
             <div className="visual-pane">
+              <h4 className="mini-heading">Items being considered</h4>
+              <div className="knapsack-items">
+                {knapsackItems.map((item) => {
+                  const isActive = item.id === knapsackState.currentItem;
+                  return (
+                    <div
+                      key={item.id}
+                      className={`knapsack-item-card ${isActive ? "active" : ""}`}
+                    >
+                      <p className="label">{item.name}</p>
+                      <p>Weight: {item.weight}</p>
+                      <p>Benefit: {item.benefit}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
               <div className="table-wrap">
                 <div className="table-row header">
                   <span>Capacity</span>
@@ -2662,31 +2765,49 @@ function App() {
                   ))}
                 </div>
                 <div className="table-row">
-                  <span>Value</span>
+                  <span>Best value</span>
                   {knapsackState.row.map((value, index) => (
                     <span key={`${value}-${index}`}>{value}</span>
                   ))}
                 </div>
               </div>
             </div>
+
             <div className="visual-pane">
-              <p className="label">Current row: {knapsackState.item}</p>
+              <div className="visual-meta">
+                <div>
+                  <h4>Current item</h4>
+                  <p>{activeKnapsackItem.name}</p>
+                </div>
+                <div>
+                  <h4>Weight</h4>
+                  <p>{activeKnapsackItem.weight}</p>
+                </div>
+                <div>
+                  <h4>Benefit</h4>
+                  <p>{activeKnapsackItem.benefit}</p>
+                </div>
+                <div>
+                  <h4>Step note</h4>
+                  <p>{knapsackState.note}</p>
+                </div>
+              </div>
+
+              <p className="label">Current DP row</p>
               <div className="chip-row">
                 {knapsackState.row.map((value, index) => (
                   <span key={`${value}-${index}`} className="chip">
-                    {value}
+                    A[{knapsackState.currentItem}][{index}] = {value}
                   </span>
                 ))}
               </div>
-              <p className="label">Step note</p>
-              <p>{knapsackState.note}</p>
             </div>
           </div>
         </article>
 
         <article className="visual-card">
           <header>
-            <h3>Huffman combine</h3>
+            <h3>Huffman tree construction</h3>
             <div className="stepper">
               <button
                 type="button"
@@ -2711,19 +2832,74 @@ function App() {
               </button>
             </div>
           </header>
+
           <div className="visual-split">
             <div className="visual-pane">
-              <div className="huffman-wrap">
-                <div className="huffman-node">
-                  <p className="label">Pick</p>
-                  <strong>{huffmanState.pick}</strong>
-                </div>
-                <div className="huffman-node merge">
-                  <p className="label">Combine</p>
-                  <strong>{huffmanState.combine}</strong>
-                </div>
+              <div className="graph-wrap">
+                <svg
+                  viewBox="0 0 420 240"
+                  role="img"
+                  aria-label="Huffman tree visualization"
+                >
+                  {huffmanState.edges.map((edge) => {
+                    const fromNode = huffmanState.nodes.find(
+                      (n) => n.id === edge.from,
+                    );
+                    const toNode = huffmanState.nodes.find(
+                      (n) => n.id === edge.to,
+                    );
+                    if (!fromNode || !toNode) return null;
+
+                    const midX = (fromNode.x + toNode.x) / 2;
+                    const midY = (fromNode.y + toNode.y) / 2;
+
+                    return (
+                      <g key={`${edge.from}-${edge.to}`}>
+                        <line
+                          x1={fromNode.x}
+                          y1={fromNode.y}
+                          x2={toNode.x}
+                          y2={toNode.y}
+                          className="graph-edge seen"
+                        />
+                        <text
+                          x={midX}
+                          y={midY - 6}
+                          textAnchor="middle"
+                          className="graph-weight"
+                        >
+                          {edge.bit}
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  {huffmanState.nodes.map((node) => (
+                    <g key={node.id}>
+                      <rect
+                        x={node.x - 26}
+                        y={node.y - 14}
+                        width="52"
+                        height="28"
+                        rx="10"
+                        className={
+                          node.active ? "tree-node active" : "tree-node"
+                        }
+                      />
+                      <text
+                        x={node.x}
+                        y={node.y + 5}
+                        textAnchor="middle"
+                        className="tree-label"
+                      >
+                        {node.label}
+                      </text>
+                    </g>
+                  ))}
+                </svg>
               </div>
             </div>
+
             <div className="visual-pane">
               <div className="visual-meta">
                 <div>
@@ -2739,6 +2915,19 @@ function App() {
                   <p>{huffmanState.note}</p>
                 </div>
               </div>
+
+              {huffmanState.codes.length > 0 && (
+                <>
+                  <p className="label">Final Huffman codes</p>
+                  <div className="chip-row">
+                    {huffmanState.codes.map((entry) => (
+                      <span key={entry.symbol} className="chip">
+                        {entry.symbol} → {entry.code}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </article>
