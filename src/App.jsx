@@ -879,18 +879,55 @@ const knapsackItems = [
 const knapsackSteps = [
   {
     currentItem: 1,
-    row: [0, 0, 30, 30, 30],
-    note: "Fill the first row: only item 1 can be taken, so value is 30 once capacity >= 2.",
+    currentCapacity: 2,
+    updatedCells: [
+      [1, 2],
+      [1, 3],
+      [1, 4],
+    ],
+    table: [
+      [0, 0, 0, 0, 0],
+      [0, 0, 30, 30, 30],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+    ],
+    note: "Row 1 considers only item 1. Since item 1 has weight 2 and benefit 30, capacities 2, 3, and 4 update from 0 to 30.",
   },
   {
     currentItem: 2,
-    row: [0, 0, 30, 50, 50],
-    note: "Consider item 2 and take the better of skipping it or using it for each capacity.",
+    currentCapacity: 3,
+    updatedCells: [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+      [2, 3],
+      [2, 4],
+    ],
+    table: [
+      [0, 0, 0, 0, 0],
+      [0, 0, 30, 30, 30],
+      [0, 0, 30, 50, 50],
+      [null, null, null, null, null],
+    ],
+    note: "Row 2 considers items 1 and 2. The whole row is filled. At capacity 3, item 2 fits, so max(skip=30, take=50) gives 50.",
   },
   {
     currentItem: 3,
-    row: [0, 0, 30, 50, 60],
-    note: "Check whether including item 3 improves the best value at each capacity.",
+    currentCapacity: 4,
+    updatedCells: [
+      [3, 0],
+      [3, 1],
+      [3, 2],
+      [3, 3],
+      [3, 4],
+    ],
+    table: [
+      [0, 0, 0, 0, 0],
+      [0, 0, 30, 30, 30],
+      [0, 0, 30, 50, 50],
+      [0, 0, 30, 50, 60],
+    ],
+    note: "Row 3 considers all items. At capacity 4, item 3 fits exactly, so max(skip=50, take=60) gives 60.",
   },
 ];
 
@@ -2757,19 +2794,50 @@ function App() {
                 })}
               </div>
 
-              <div className="table-wrap">
+              <div className="table-wrap knapsack-table">
                 <div className="table-row header">
-                  <span>Capacity</span>
+                  <span>A[i][w]</span>
                   {knapsackCaps.map((cap) => (
-                    <span key={cap}>{cap}</span>
+                    <span key={cap}>w={cap}</span>
                   ))}
                 </div>
-                <div className="table-row">
-                  <span>Best value</span>
-                  {knapsackState.row.map((value, index) => (
-                    <span key={`${value}-${index}`}>{value}</span>
-                  ))}
-                </div>
+
+                {knapsackState.table.map((row, rowIndex) => (
+                  <div key={rowIndex} className="table-row">
+                    <span>{rowIndex === 0 ? "i=0" : `i=${rowIndex}`}</span>
+
+                    {row.map((value, colIndex) => {
+                      const isActive =
+                        rowIndex === knapsackState.currentItem &&
+                        colIndex === knapsackState.currentCapacity;
+
+                      const isCurrentRow =
+                        rowIndex === knapsackState.currentItem;
+
+                      const isUpdated = knapsackState.updatedCells.some(
+                        ([updatedRow, updatedCol]) =>
+                          updatedRow === rowIndex && updatedCol === colIndex,
+                      );
+
+                      return (
+                        <span
+                          key={`${rowIndex}-${colIndex}`}
+                          className={
+                            isActive
+                              ? "dp-cell active"
+                              : isUpdated
+                                ? "dp-cell updated"
+                                : isCurrentRow
+                                  ? "dp-cell current-row"
+                                  : "dp-cell"
+                          }
+                        >
+                          {value === null ? "—" : value}
+                        </span>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -2795,11 +2863,17 @@ function App() {
 
               <p className="label">Current DP row</p>
               <div className="chip-row">
-                {knapsackState.row.map((value, index) => (
-                  <span key={`${value}-${index}`} className="chip">
-                    A[{knapsackState.currentItem}][{index}] = {value}
-                  </span>
-                ))}
+                {knapsackState.table[knapsackState.currentItem].map(
+                  (value, index) => (
+                    <span
+                      key={`${knapsackState.currentItem}-${index}`}
+                      className="chip"
+                    >
+                      A[{knapsackState.currentItem}][{index}] ={" "}
+                      {value === null ? "—" : value}
+                    </span>
+                  ),
+                )}
               </div>
             </div>
           </div>

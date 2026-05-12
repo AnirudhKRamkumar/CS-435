@@ -927,3 +927,78 @@ select {
     flex-direction: column;
   }
 }
+
+.mini-heading {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.knapsack-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.knapsack-item-card {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.knapsack-item-card.active {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(219, 234, 254, 0.8);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+}
+
+.tree-node {
+  fill: rgba(241, 245, 249, 0.95);
+  stroke: rgba(148, 163, 184, 0.8);
+  stroke-width: 1.5;
+}
+
+.tree-node.active {
+  fill: rgba(254, 249, 195, 0.95);
+  stroke: rgba(245, 158, 11, 0.9);
+}
+
+.tree-label {
+  font-size: 11px;
+  fill: #0f172a;
+  font-weight: 600;
+}
+
+.knapsack-table {
+  overflow-x: auto;
+}
+
+.knapsack-table .table-row {
+  grid-template-columns: 90px repeat(5, minmax(70px, 1fr));
+}
+
+.dp-cell {
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.dp-cell.current-row {
+  background: rgba(219, 234, 254, 0.5);
+}
+
+.dp-cell.updated {
+  background: rgba(187, 247, 208, 0.8);
+  border-color: rgba(34, 197, 94, 0.65);
+  font-weight: 700;
+}
+
+.dp-cell.active {
+  background: rgba(254, 249, 195, 0.95);
+  border-color: rgba(245, 158, 11, 0.85);
+  transform: scale(1.04);
+  font-weight: 800;
+}
